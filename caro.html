@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>cờ caro</title>
+    <style>
+        .block {
+        height: 20px;
+        width: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id = "table" >
+    </div>
+</body>
+<script>
+        //start
+        let current = 1;
+        let blocks =[];
+        let endGame = false;
+        let Player = function (value, current) {
+            this.value = value;
+            this.current = current;
+        }
+        function drawTable () {
+            let table = "<table border='1' style='border-collapse: collapse'>";
+            for (i = 0; i < 20; i++) {
+                table += "<tr>"
+                blocks[i] = [];
+                for (j = 0; j < 20; j++) {
+                    table += "<td id = b" + i + ',' + j + " class='block' onclick= 'startGame("+i+","+j+")'></td>"
+                    blocks[i][j] = new Block(i, j, true)
+                }
+                table += "</tr>"
+            }
+            table += "</table>";
+            document.getElementById('table').innerHTML = table;
+        }
+    let Block = function (x, y, available) {
+        this.X = x;
+        this.Y = y;
+        this.value = 0;
+        this.availble = available;
+        }
+
+        function startGame (x, y) {
+            //check Block available
+            if (!endGame) {
+                let block = blocks[x][y];
+                if (block.availble) {
+                    let id = "b" + x + "," + y;
+                    if (current == 1) {
+                        document.getElementById(id).innerHTML = "X";
+                        current = -1;
+                        block.value = -1;
+                    } else {
+                        document.getElementById(id).innerHTML = "O";
+                        current = 1;
+                        block.value = 1;
+                    }
+                    block.availble = false
+                }
+                //check condition
+                gameOver(x, y);
+            }
+        }
+
+        drawTable();
+        let player1 = new Player ("X", true);
+        let player2 = new Player ("O", false);
+    function gameOver (x, y) {
+    //check hàng ngang
+        let total = 0;
+        for (let i = 0; i < 15; i++) {
+            for (let j = 0; j < 5; j++) {
+                total = total + blocks[x][i+j].value
+            }
+            switch (total) {
+                case 5:
+                    alert("O won");
+                    endGame = true;
+                    break;
+                case -5:
+                    alert("X won");
+                    endGame = true;
+                    break;
+            }
+            total = 0;
+        }
+    //check hàng dọc
+        let total1 = 0;
+        for (let i = 0; i < 15; i++) {
+            for (let j = 0; j < 5; j++) {
+                total1 = total1 + blocks[i+j][y].value;
+            }
+            switch (total1) {
+                case 5:
+                    alert("O won");
+                    endGame = true;
+                    break;
+                case -5:
+                    alert("X won");
+                    endGame = true;
+                    break;
+            }
+            total1 = 0;
+        }
+    //check hàng chéo
+        let total2 = 0;
+        let total4 = 0;
+        for (let i = 0; i < 16; i++) {
+            for (let j = 0; j < 16; j++) {
+                for (let k = 0; k < 5; k++) {
+                    total2 = total2 + blocks[i+k][j+k].value;
+                    total4 = total4 + blocks[i+4-k][j+k].value;
+                }
+                switch (total2) {
+                    case 5:
+                        alert("O won");
+                        endGame = true;
+                        break;
+                    case -5:
+                        alert("X won");
+                        endGame = true;
+                        break;
+                }
+                switch (total4) {
+                    case 5:
+                        alert("O won");
+                        endGame = true;
+                        break;
+                    case -5:
+                        alert("X won");
+                        endGame = true;
+                        break;
+                }
+                total4 = 0;
+                total2 = 0;
+            }
+        }
+    }
+</script>
+</html>
